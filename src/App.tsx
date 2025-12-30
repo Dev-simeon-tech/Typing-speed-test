@@ -1,7 +1,10 @@
+import Header from "./components/ui/header";
+import TypingText from "./features/typingText";
 export default function App() {
   return (
-    <div>
-      <h1 className='text-preset-1'>Hello world</h1>
-    </div>
+    <main className='px-4 md:px-8 lg:px-28'>
+      <Header />
+      <TypingText />
+    </main>
   );
 }
