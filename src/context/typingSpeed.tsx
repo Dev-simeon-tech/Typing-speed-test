@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 
 export type DifficultyType = "easy" | "medium" | "hard";
-export type ModeType = "60s" | "passage";
+export type ModeType = "timed (60s)" | "passage";
 
 type TypingSpeedContextType = {
   wpm: number;
@@ -29,7 +29,7 @@ export const TypingSpeedContextProvider = ({
   const [wpm, setWpm] = useState(0);
   const [accuracy, setAccuracy] = useState(100);
   const [difficulty, setDifficulty] = useState<DifficultyType>("easy");
-  const [mode, setMode] = useState<ModeType>("60s");
+  const [mode, setMode] = useState<ModeType>("timed (60s)");
   const [correctChars, setCorrectChars] = useState(0);
   const [inCorrectChars, setInCorrectChars] = useState(0);
   const [started, setStarted] = useState(false);

@@ -15,6 +15,7 @@ type Texts = {
 const TypingText = () => {
   const { difficulty, started, setStarted } = useTypingSpeedContext();
   const [input, setInput] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const [texts, setTexts] = useState({} as Texts);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -28,8 +29,9 @@ const TypingText = () => {
   }, []);
 
   useEffect(() => {
-    setInput(""); // reset typing input
-  }, [difficulty, texts]);
+    setInput("");
+    setIsOpen(false); // reset typing input
+  }, [difficulty, texts, setStarted]);
 
   const memoizedCurrentText = useMemo(
     () => getRandomText(texts, difficulty),
@@ -37,13 +39,18 @@ const TypingText = () => {
   );
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!started) {
+      setStarted(true);
+    }
     if (e.target.value.length <= memoizedCurrentText.length) {
       setInput(e.target.value);
+    } else {
+      setStarted(false);
     }
   };
   const onClickHandler = () => {
     inputRef.current?.focus();
-    // setStarted(true)
+    setIsOpen(true);
   };
 
   if (!texts) return <div>Loading...</div>;
@@ -53,14 +60,12 @@ const TypingText = () => {
   console.log(splitIntoWords(memoizedCurrentText));
   return (
     <div className='relative'>
-      {!started && (
+      {!isOpen && (
         <div
-          onClick={() => setStarted(true)}
+          onClick={onClickHandler}
           className='absolute flex gap-3 flex-col justify-center items-center text-preset-3-semibold  w-full z-10 h-full top-0 '
         >
-          <Button onClick={() => () => setStarted(true)}>
-            Start Typing Test
-          </Button>
+          <Button onClick={onClickHandler}>Start Typing Test</Button>
           <p>Or click the text and start typing</p>
         </div>
       )}
@@ -74,20 +79,20 @@ const TypingText = () => {
       <div
         onClick={onClickHandler}
         className={`relative md:text-preset-1-regular text-preset-1-regular-mobile select-none ${
-          !started && "blur-sm"
+          !isOpen && "blur-sm"
         }`}
       >
         {splitIntoWords(memoizedCurrentText).map((word, wordIndex) => {
           const letters = word.split("");
           return (
-            <span key={wordIndex} className='inline-block '>
+            <span key={wordIndex} className='inline-block leading-10 '>
               {letters.map((char: string, index: number) => {
                 const typedChar = input[charIndex];
                 const status = getCharStatus(char, typedChar);
                 charIndex++;
                 return (
                   <span key={index} className='relative'>
-                    {started && (
+                    {isOpen && (
                       <>
                         {cursorIndex + 1 === charIndex && (
                           <span className='absolute left-0 rounded-xs top-0 w-full h-full py-1  bg-neutral-400/30 animate-blink' />

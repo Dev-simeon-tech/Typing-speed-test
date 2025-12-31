@@ -12,7 +12,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const baseStyles =
-  "inline-flex items-center justify-center leading-none rounded-xl font-medium focus:ring-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center cursor-pointer justify-center leading-none rounded-xl font-medium focus:ring-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: "bg-blue-600 hover:bg-blue-400 py-4 px-6 ",
