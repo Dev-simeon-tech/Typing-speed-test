@@ -6,19 +6,34 @@ import { getCharStatus } from "../utils/getCharStatus";
 import { getRandomText } from "../utils/getRandomtext";
 import { splitIntoWords } from "../utils/splitIntoWords";
 
+import RestartIcon from "@/assets/images/icon-restart.svg?react";
 type Texts = {
   easy: { id: number; text: string }[];
   medium: { id: number; text: string }[];
   hard: { id: number; text: string }[];
 };
 
-const TypingText = () => {
-  const { difficulty, started, setStarted } = useTypingSpeedContext();
+type TypingTextType = {
+  setTotalKeystrokes: React.Dispatch<React.SetStateAction<number>>;
+  setErrorKeystrokes: React.Dispatch<React.SetStateAction<number>>;
+};
+
+const TypingText = ({
+  setTotalKeystrokes,
+  setErrorKeystrokes,
+}: TypingTextType) => {
+  const { difficulty, started, setStarted, setEnded } = useTypingSpeedContext();
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [texts, setTexts] = useState({} as Texts);
+  const [currentText, setCurrentText] = useState(() =>
+    getRandomText(texts, difficulty)
+  );
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  });
   useEffect(() => {
     const fetchTexts = async () => {
       const response = await fetch("../../data.json");
@@ -30,36 +45,65 @@ const TypingText = () => {
 
   useEffect(() => {
     setInput("");
+    setStarted(false);
     setIsOpen(false); // reset typing input
   }, [difficulty, texts, setStarted]);
 
-  const memoizedCurrentText = useMemo(
-    () => getRandomText(texts, difficulty),
-    [difficulty, texts]
-  );
+  useEffect(() => {
+    setCurrentText(() => getRandomText(texts, difficulty));
+  }, [texts, difficulty]);
+
+  const memoizedCurrentText = useMemo(() => currentText, [currentText]);
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!started) {
       setStarted(true);
     }
-    if (e.target.value.length <= memoizedCurrentText.length) {
+    const prev = input;
+    const value = e.target.value;
+    // Ignore deletions
+    if (value.length < prev.length) {
+      setInput(value);
+      return;
+    }
+
+    // New character typed
+    const newChar = value[value.length - 1];
+    const expectedChar = currentText[value.length - 1];
+
+    setTotalKeystrokes((k) => k + 1);
+
+    if (newChar !== expectedChar) {
+      setErrorKeystrokes((e) => e + 1);
+    }
+
+    if (e.target.value.length < memoizedCurrentText.length) {
       setInput(e.target.value);
     } else {
       setStarted(false);
+      setEnded(true);
     }
   };
+
   const onClickHandler = () => {
     inputRef.current?.focus();
     setIsOpen(true);
+  };
+
+  const restartTestHandler = () => {
+    setStarted(false);
+    setCurrentText(() => getRandomText(texts, difficulty));
+    setInput("");
+    setErrorKeystrokes(0);
+    setTotalKeystrokes(0);
   };
 
   if (!texts) return <div>Loading...</div>;
   const cursorIndex = input.length;
   let charIndex = 0;
 
-  console.log(splitIntoWords(memoizedCurrentText));
   return (
-    <div className='relative'>
+    <div className='relative mt-8'>
       {!isOpen && (
         <div
           onClick={onClickHandler}
@@ -78,7 +122,7 @@ const TypingText = () => {
       />
       <div
         onClick={onClickHandler}
-        className={`relative md:text-preset-1-regular text-preset-1-regular-mobile select-none ${
+        className={`relative mb-8 md:mb-10 lg:mb-16 md:text-preset-1-regular text-preset-1-regular-mobile select-none ${
           !isOpen && "blur-sm"
         }`}
       >
@@ -118,6 +162,18 @@ const TypingText = () => {
           );
         })}
       </div>
+      {isOpen && (
+        <div className='border-t flex justify-center pt-6 lg:pt-8 border-neutral-700'>
+          <Button
+            onClick={restartTestHandler}
+            variant='neutral'
+            className='gap-2.5 '
+          >
+            <p>Restart Test</p>
+            <RestartIcon />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

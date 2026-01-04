@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import type { ButtonHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
-type ButtonVariant = "primary" | "secondary";
+type ButtonVariant = "primary" | "secondary" | "neutral";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -17,6 +17,7 @@ const baseStyles =
 const variantStyles: Record<ButtonVariant, string> = {
   primary: "bg-blue-600 hover:bg-blue-400 py-4 px-6 ",
   secondary: "bg-neutral-0 hover:bg-neutral-0/90 py-2.5 px-4 ",
+  neutral: "bg-neutral-800 hover:bg-neutral-500 px-4 py-3 focus:ring-neutral-0",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

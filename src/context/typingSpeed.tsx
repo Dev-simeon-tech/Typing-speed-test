@@ -7,6 +7,7 @@ type TypingSpeedContextType = {
   wpm: number;
   setWpm: React.Dispatch<React.SetStateAction<number>>;
   accuracy: number;
+  setAccuracy: React.Dispatch<React.SetStateAction<number>>;
   setDifficulty: React.Dispatch<React.SetStateAction<DifficultyType>>;
   mode: ModeType;
   setMode: React.Dispatch<React.SetStateAction<ModeType>>;
@@ -17,6 +18,8 @@ type TypingSpeedContextType = {
   setCorrectChars: React.Dispatch<React.SetStateAction<number>>;
   started: boolean;
   setStarted: React.Dispatch<React.SetStateAction<boolean>>;
+  ended: boolean;
+  setEnded: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const TypingSpeedContext = createContext({} as TypingSpeedContextType);
@@ -33,6 +36,7 @@ export const TypingSpeedContextProvider = ({
   const [correctChars, setCorrectChars] = useState(0);
   const [inCorrectChars, setInCorrectChars] = useState(0);
   const [started, setStarted] = useState(false);
+  const [ended, setEnded] = useState(false);
 
   const value = {
     wpm,
@@ -49,6 +53,8 @@ export const TypingSpeedContextProvider = ({
     setInCorrectChars,
     started,
     setStarted,
+    ended,
+    setEnded,
   };
 
   return (
