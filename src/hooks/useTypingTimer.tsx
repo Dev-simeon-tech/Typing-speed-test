@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 type TimerMode = "timed" | "passage";
 
@@ -54,11 +54,11 @@ export function useTypingTimer({
   };
 
   // Reset timer
-  const reset = () => {
+  const reset = useCallback(() => {
     clear();
     setIsRunning(false);
     setTime(mode === "timed" ? duration : 0);
-  };
+  }, [duration, mode]);
 
   // Cleanup on unmount or mode change
   useEffect(() => {
@@ -68,7 +68,7 @@ export function useTypingTimer({
   // Reset if mode or duration changes
   useEffect(() => {
     reset();
-  }, [mode, duration]);
+  }, [mode, duration, reset]);
 
   return {
     time,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "../components/ui/button";
 
 import { useTypingSpeedContext } from "../hooks/useTypingSpeedContext";
@@ -22,7 +22,8 @@ const TypingText = ({
   setTotalKeystrokes,
   setErrorKeystrokes,
 }: TypingTextType) => {
-  const { difficulty, started, setStarted, setEnded } = useTypingSpeedContext();
+  const { difficulty, started, setStarted, setEnded, mode } =
+    useTypingSpeedContext();
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [texts, setTexts] = useState({} as Texts);
@@ -47,13 +48,13 @@ const TypingText = ({
     setInput("");
     setStarted(false);
     setIsOpen(false); // reset typing input
-  }, [difficulty, texts, setStarted]);
+  }, [difficulty, texts, setStarted, mode]);
 
   useEffect(() => {
     setCurrentText(() => getRandomText(texts, difficulty));
-  }, [texts, difficulty]);
+  }, [texts, difficulty, mode]);
 
-  const memoizedCurrentText = useMemo(() => currentText, [currentText]);
+  // const memoizedCurrentText = useMemo(() => currentText, [currentText]);
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!started) {
@@ -77,7 +78,7 @@ const TypingText = ({
       setErrorKeystrokes((e) => e + 1);
     }
 
-    if (e.target.value.length < memoizedCurrentText.length) {
+    if (e.target.value.length < currentText.length) {
       setInput(e.target.value);
     } else {
       setStarted(false);
@@ -98,7 +99,12 @@ const TypingText = ({
     setTotalKeystrokes(0);
   };
 
-  if (!texts) return <div>Loading...</div>;
+  if (!texts)
+    return (
+      <div className='min-h-1/2 flex justify-between items-center'>
+        Loading...
+      </div>
+    );
   const cursorIndex = input.length;
   let charIndex = 0;
 
@@ -107,7 +113,7 @@ const TypingText = ({
       {!isOpen && (
         <div
           onClick={onClickHandler}
-          className='absolute flex gap-3 flex-col justify-center items-center text-preset-3-semibold  w-full z-10 h-full top-0 '
+          className='absolute flex gap-3 flex-col justify-center items-center text-preset-3-semibold  w-full z-10 h-[65vh] top-0 '
         >
           <Button onClick={onClickHandler}>Start Typing Test</Button>
           <p>Or click the text and start typing</p>
@@ -126,7 +132,7 @@ const TypingText = ({
           !isOpen && "blur-sm"
         }`}
       >
-        {splitIntoWords(memoizedCurrentText).map((word, wordIndex) => {
+        {splitIntoWords(currentText).map((word, wordIndex) => {
           const letters = word.split("");
           return (
             <span key={wordIndex} className='inline-block leading-10 '>

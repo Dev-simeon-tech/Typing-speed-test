@@ -16,7 +16,7 @@ const baseStyles =
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: "bg-blue-600 hover:bg-blue-400 py-4 px-6 ",
-  secondary: "bg-neutral-0 hover:bg-neutral-0/90 py-2.5 px-4 ",
+  secondary: "bg-neutral-0 text-neutral-900 hover:bg-neutral-0/90 py-2.5 px-4 ",
   neutral: "bg-neutral-800 hover:bg-neutral-500 px-4 py-3 focus:ring-neutral-0",
 };
 
