@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useTypingTimer } from "../hooks/useTypingTimer";
 import { useTypingSpeedContext } from "../hooks/useTypingSpeedContext";
+import useDuration from "../hooks/useDuration";
+
+import { Button } from "../components/ui/button";
 import Dropdown from "../components/ui/dropdown";
 import type { ModeType } from "../context/typingSpeed";
 import type { DifficultyType } from "../context/typingSpeed";
@@ -9,8 +12,15 @@ import { calculateAccuracy } from "../utils/calculateAccuracy";
 import { calculateWPM } from "../utils/calculateWpm";
 import { formatTime } from "../utils/formatTime";
 import { getTimerColorScheme } from "../utils/getTimerColorScheme";
+import { getModeValue } from "../utils/getModeValue";
 
-const ModeArray: ModeType[] = ["timed (60s)", "passage"];
+const ModeArray: ModeType[] = [
+  "timed (120s)",
+  "timed (60s)",
+  "timed (30s)",
+  "timed (15s)",
+  "passage",
+];
 const difficultyArray: DifficultyType[] = ["easy", "medium", "hard"];
 
 type StatsAndSettingsBarType = {
@@ -24,16 +34,18 @@ const StatsAndSettingsBar = ({
   errorKeystrokes,
   setTotalTime,
 }: StatsAndSettingsBarType) => {
-  const { started, difficulty, setDifficulty, setMode, mode, setEnded } =
-    useTypingSpeedContext();
+  const {
+    started,
+    difficulty,
+    setDifficulty,
+    setMode,
+    mode,
+    setEnded,
+    isPaused,
+  } = useTypingSpeedContext();
+  const { duration } = useDuration();
 
-  let duration = 0;
-  switch (mode) {
-    case "timed (60s)":
-      duration = 60;
-  }
-
-  const { time, start, reset } = useTypingTimer({
+  const { time, start, reset, pause } = useTypingTimer({
     mode: mode === "passage" ? "passage" : "timed",
     duration,
   });
@@ -45,8 +57,12 @@ const StatsAndSettingsBar = ({
     } else {
       reset();
     }
-  }, [started, start, reset]);
+    if (isPaused) {
+      pause();
+    }
+  }, [started, start, reset, isPaused, pause]);
 
+  // handles typing test ending
   useEffect(() => {
     if (started && mode !== "passage" && time === 0) {
       setEnded(true);
@@ -61,11 +77,10 @@ const StatsAndSettingsBar = ({
   const elapsedTime = mode === "passage" ? time : duration - time;
   const liveWpm = calculateWPM(totalKeystrokes, elapsedTime);
   const liveAccuracy = calculateAccuracy(totalKeystrokes, errorKeystrokes);
-  const timedTime = time < 10 ? "0" + time : time;
 
   return (
-    <div className='flex flex-col lg:flex-row gap-4 '>
-      <div className='text-preset-3-mobile flex justify-between  *:flex *:flex-col *:gap-2 *:items-center *:grow   divide-x divide-neutral-700 md:text-preset-3 text-neutral-400'>
+    <div className='flex flex-col lg:flex-wrap lg:justify-between lg:flex-row pb-4 gap-4 border-b border-neutral-700 '>
+      <div className='text-preset-3-mobile flex justify-between *:grow *:flex *:flex-col md:*:grow-0  md:*:flex-row *:gap-2 *:items-center  md:justify-start md:space-x-5 md:[&_p:nth-child(-n+2)]:pr-5   divide-x divide-neutral-700 md:text-preset-3 text-neutral-400'>
         <p>
           WPM: <span className='text-neutral-0 text-preset-2'>{liveWpm}</span>
         </p>
@@ -92,12 +107,46 @@ const StatsAndSettingsBar = ({
                 : getTimerColorScheme(time, duration)
             }`}
           >
-            {mode === "passage" ? formatTime(time) : `0:${timedTime}`}
+            {formatTime(time)}
           </span>
         </p>
       </div>
 
-      {/* <div></div>  */}
+      <div className='md:flex divide-x  divide-neutral-700 hidden'>
+        <div className='flex gap-2 items-center pr-4'>
+          <p className='text-preset-5 mr-2 text-neutral-400'>Difficulty:</p>
+          {difficultyArray.map((currentDifficulty, index) => (
+            <Button
+              onClick={() => setDifficulty(currentDifficulty)}
+              className={`capitalize ${
+                difficulty === currentDifficulty
+                  ? "border-blue-400 text-blue-400"
+                  : ""
+              }`}
+              key={index}
+              variant='select'
+            >
+              {currentDifficulty}
+            </Button>
+          ))}
+        </div>
+        <div className='flex gap-2 items-center pl-4'>
+          <p className='text-preset-5 mr-2 text-neutral-400'>Mode:</p>
+          {ModeArray.map((currentMode, index) => (
+            <Button
+              onClick={() => setMode(currentMode)}
+              className={` capitalize ${
+                mode === currentMode ? "border-blue-400 text-blue-400" : ""
+              }`}
+              key={index}
+              variant='select'
+            >
+              {getModeValue(currentMode)}
+            </Button>
+          ))}
+        </div>
+      </div>
+
       <div className='flex gap-2.5 md:hidden justify-between'>
         <Dropdown
           itemsArr={difficultyArray}

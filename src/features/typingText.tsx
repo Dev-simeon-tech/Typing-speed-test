@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "../components/ui/button";
+import useTexts from "../hooks/useTexts";
 
 import { useTypingSpeedContext } from "../hooks/useTypingSpeedContext";
 import { getCharStatus } from "../utils/getCharStatus";
@@ -7,11 +8,6 @@ import { getRandomText } from "../utils/getRandomtext";
 import { splitIntoWords } from "../utils/splitIntoWords";
 
 import RestartIcon from "@/assets/images/icon-restart.svg?react";
-type Texts = {
-  easy: { id: number; text: string }[];
-  medium: { id: number; text: string }[];
-  hard: { id: number; text: string }[];
-};
 
 type TypingTextType = {
   setTotalKeystrokes: React.Dispatch<React.SetStateAction<number>>;
@@ -22,28 +18,33 @@ const TypingText = ({
   setTotalKeystrokes,
   setErrorKeystrokes,
 }: TypingTextType) => {
-  const { difficulty, started, setStarted, setEnded, mode } =
-    useTypingSpeedContext();
+  const {
+    difficulty,
+    started,
+    setStarted,
+    setEnded,
+    mode,
+    isPaused,
+    setIsPaused,
+  } = useTypingSpeedContext();
+  const { texts } = useTexts();
+
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [texts, setTexts] = useState({} as Texts);
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const typingContainerRef = useRef<HTMLDivElement>(null);
   const [currentText, setCurrentText] = useState(() =>
     getRandomText(texts, difficulty)
   );
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    inputRef.current?.focus();
-  });
-  useEffect(() => {
-    const fetchTexts = async () => {
-      const response = await fetch("../../data.json");
-      const data = await response.json();
-      setTexts(data);
-    };
-    fetchTexts();
-  }, []);
+    if (isPaused) {
+      setIsOpen(false);
+    }
+  }, [isPaused]);
 
+  // reset test on state changes
   useEffect(() => {
     setInput("");
     setStarted(false);
@@ -53,8 +54,6 @@ const TypingText = ({
   useEffect(() => {
     setCurrentText(() => getRandomText(texts, difficulty));
   }, [texts, difficulty, mode]);
-
-  // const memoizedCurrentText = useMemo(() => currentText, [currentText]);
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!started) {
@@ -89,6 +88,7 @@ const TypingText = ({
   const onClickHandler = () => {
     inputRef.current?.focus();
     setIsOpen(true);
+    setIsPaused(false);
   };
 
   const restartTestHandler = () => {
@@ -101,7 +101,7 @@ const TypingText = ({
 
   if (!texts)
     return (
-      <div className='min-h-1/2 flex justify-between items-center'>
+      <div className='min-h-1/2 text-preset-1 flex justify-between items-center'>
         Loading...
       </div>
     );
@@ -109,11 +109,11 @@ const TypingText = ({
   let charIndex = 0;
 
   return (
-    <div className='relative mt-8'>
+    <div ref={typingContainerRef} className='relative mt-8'>
       {!isOpen && (
         <div
           onClick={onClickHandler}
-          className='absolute flex gap-3 flex-col justify-center items-center text-preset-3-semibold  w-full z-10 h-[65vh] top-0 '
+          className='absolute flex text-center gap-3 flex-col justify-center items-center text-preset-3-semibold md:h-full w-full z-10 h-[65vh] top-0 '
         >
           <Button onClick={onClickHandler}>Start Typing Test</Button>
           <p>Or click the text and start typing</p>
@@ -122,13 +122,15 @@ const TypingText = ({
       <input
         autoFocus
         className='absolute opacity-0 pointer-events-none'
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         ref={inputRef}
         value={input}
         onChange={onChangeHandler}
       />
       <div
         onClick={onClickHandler}
-        className={`relative mb-8 md:mb-10 lg:mb-16 md:text-preset-1-regular text-preset-1-regular-mobile select-none ${
+        className={`relative mb-8 md:mb-10 lg:mb-16 text-preset-1-regular select-none ${
           !isOpen && "blur-sm"
         }`}
       >
@@ -142,7 +144,7 @@ const TypingText = ({
                 charIndex++;
                 return (
                   <span key={index} className='relative'>
-                    {isOpen && (
+                    {isOpen && isFocused && (
                       <>
                         {cursorIndex + 1 === charIndex && (
                           <span className='absolute left-0 rounded-xs top-0 w-full h-full py-1  bg-neutral-400/30 animate-blink' />

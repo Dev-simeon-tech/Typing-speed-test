@@ -1,5 +1,6 @@
 import { useState, useEffect, useEffectEvent } from "react";
 import { useTypingSpeedContext } from "../hooks/useTypingSpeedContext";
+import useDuration from "../hooks/useDuration";
 
 import TypingText from "../features/typingText";
 import StatsAndSettingsBar from "../features/statsAndSettingsBar";
@@ -16,16 +17,14 @@ const TypingSpeedTestContainer = () => {
     setWpm,
     mode,
     difficulty,
+    setIsPaused,
+    started,
   } = useTypingSpeedContext();
   const [totalKeystrokes, setTotalKeystrokes] = useState(0);
   const [errorKeystrokes, setErrorKeystrokes] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
+  const { duration } = useDuration();
 
-  let duration = 0;
-  switch (mode) {
-    case "timed (60s)":
-      duration = 60;
-  }
   const reset = () => {
     setErrorKeystrokes(0);
     setTotalKeystrokes(0);
@@ -52,10 +51,26 @@ const TypingSpeedTestContainer = () => {
     onTestEnd(ended);
   }, [ended]);
 
+  useEffect(() => {
+    const timerPause = () => {
+      if (!ended && started) {
+        setIsPaused(true);
+      }
+    };
+
+    document.addEventListener("visibilitychange", timerPause);
+    window.addEventListener("blur", timerPause);
+
+    return () => {
+      document.removeEventListener("visibilitychange", timerPause);
+      window.removeEventListener("blur", timerPause);
+    };
+  }, [setIsPaused, ended, started]);
+
   return (
     <>
       {!ended ? (
-        <div className='mt-8 md:mt-10 lg:mt-16'>
+        <div className='typing-test-cont mt-8 md:mt-10 lg:mt-16'>
           <StatsAndSettingsBar
             totalKeystrokes={totalKeystrokes}
             errorKeystrokes={errorKeystrokes}

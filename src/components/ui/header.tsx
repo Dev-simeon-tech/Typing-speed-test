@@ -22,19 +22,21 @@ const Header = () => {
   }, [ended]);
 
   return (
-    <header className='flex justify-between items-center pt-4'>
+    <header className='flex justify-between items-center pt-4 md:pt-8'>
       <div>
-        <LogoLarge className='lg:block hidden' />
-        <LogoSmall className='lg:hidden z-10' />
+        <LogoLarge className='md:block hidden' />
+        <LogoSmall className='md:hidden z-10' />
       </div>
 
       <div className='flex gap-2'>
         <TrophyIcon />
-        <p className='text-neutral-400'>
-          <span className='md:block hidden text-preset-4 '>Personal best:</span>{" "}
-          <span className='text-preset-3-mobile'>Best:</span>{" "}
+        <p className='text-neutral-400 flex items-center gap-2'>
+          <span className='md:block hidden text-preset-4 '>
+            Personal best:{" "}
+          </span>{" "}
+          <span className='text-preset-3-mobile md:hidden'>Best:</span>{" "}
           <span className='text-neutral-0 md:text-preset-4 text-preset-3-mobile'>
-            {personalBest} wpm
+            {personalBest} WPM
           </span>
         </p>
       </div>

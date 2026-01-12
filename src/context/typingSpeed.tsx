@@ -1,7 +1,12 @@
 import { createContext, useState } from "react";
 
 export type DifficultyType = "easy" | "medium" | "hard";
-export type ModeType = "timed (60s)" | "passage";
+export type ModeType =
+  | "timed (60s)"
+  | "passage"
+  | "timed (120s)"
+  | "timed (30s)"
+  | "timed (15s)";
 
 type TypingSpeedContextType = {
   wpm: number;
@@ -20,6 +25,8 @@ type TypingSpeedContextType = {
   setStarted: React.Dispatch<React.SetStateAction<boolean>>;
   ended: boolean;
   setEnded: React.Dispatch<React.SetStateAction<boolean>>;
+  isPaused: boolean;
+  setIsPaused: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const TypingSpeedContext = createContext({} as TypingSpeedContextType);
@@ -31,12 +38,13 @@ export const TypingSpeedContextProvider = ({
 }) => {
   const [wpm, setWpm] = useState(0);
   const [accuracy, setAccuracy] = useState(100);
-  const [difficulty, setDifficulty] = useState<DifficultyType>("easy");
+  const [difficulty, setDifficulty] = useState<DifficultyType>("medium");
   const [mode, setMode] = useState<ModeType>("timed (60s)");
   const [correctChars, setCorrectChars] = useState(0);
   const [inCorrectChars, setInCorrectChars] = useState(0);
   const [started, setStarted] = useState(false);
   const [ended, setEnded] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   const value = {
     wpm,
@@ -55,6 +63,8 @@ export const TypingSpeedContextProvider = ({
     setStarted,
     ended,
     setEnded,
+    isPaused,
+    setIsPaused,
   };
 
   return (
