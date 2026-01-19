@@ -121,6 +121,7 @@ const TypingText = ({
       )}
       <input
         autoFocus
+        aria-label='test input'
         className='absolute opacity-0 pointer-events-none'
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}

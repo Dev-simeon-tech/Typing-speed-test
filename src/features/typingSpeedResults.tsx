@@ -22,7 +22,6 @@ const TypingSpeedResults = () => {
     chartData,
   } = useTypingSpeedContext();
   const [personalBest] = useLocalStorage<number>("personal-best", 0);
-  console.log(chartData);
 
   const isBaseline = personalBest === 0;
   let isHighScore = false;
@@ -51,7 +50,7 @@ const TypingSpeedResults = () => {
   };
   return (
     <div className='flex flex-col items-center '>
-      <div className='mt-8 pb-15 pt-10  md:mt-20 lg:mt-16 overflow-x-hidden'>
+      <div className='mt-8 pb-15 pt-10  md:mt-20 lg:mt-16 w-full overflow-x-hidden'>
         {isBaseline && (
           <div className='flex items-center text-center gap-2.5 flex-col'>
             <CompletedIcon className='pb-1.5' />
@@ -165,7 +164,7 @@ const TypingSpeedResults = () => {
           ))}
       </div>
 
-      {!isHighScore && (
+      {isHighScore && (
         <div className='relative w-[99vw] overflow-hidden -z-10 flex justify-center items-center'>
           <img src={ConfettiPattern} className='w-full' alt='' />
         </div>

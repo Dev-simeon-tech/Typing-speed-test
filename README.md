@@ -14,7 +14,6 @@ This is a solution to the [Typing Speed Test challenge on Frontend Mentor](https
   - [Continued development](#continued-development)
   - [Useful resources](#useful-resources)
 - [Author](#author)
-- [Acknowledgments](#acknowledgments)
 
 ## Overview
 
@@ -42,8 +41,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Solution URL: [Solution URL](https://www.frontendmentor.io/solutions/typing-speed-test-app-with-react-SnPHleoEzz)
+- Live Site URL: [Live Site URL](https://typing-speed-test-ose.vercel.app/)
 
 ## My process
 
@@ -63,8 +62,6 @@ Users should be able to:
 - state mangement
 - how to use useEffectEvent
 - Recharts
-
-To see how you can add code snippets, see below:
 
 ```ts
 export function useLocalStorage<T>(key: string, initialValue: T) {
@@ -129,28 +126,16 @@ const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 
 ### Continued development
 
-- tracking errors and displaying it on the chart
-  Create shareable result cards for social media
-
-**Note: Delete this note and the content within this section and replace with your own plans for continued development.**
+- Tracking errors and displaying it on the chart
+- Create shareable result cards for social media
 
 ### Useful resources
 
-- [Example resource 1](https://www.example.com) - This helped me for XYZ reason. I really liked this pattern and will use it going forward.
-- [Example resource 2](https://www.example.com) - This is an amazing article which helped me finally understand XYZ. I'd recommend it to anyone still learning this concept.
-
-**Note: Delete this note and replace the list above with resources that helped you during the challenge. These could come in handy for anyone viewing your solution or for yourself when you look back on this project in the future.**
+- [Rechart docs](https://recharts.github.io/en-US) - This helped me get started with the chart implementation quickly
+- [MDN docs](https://developer.mozilla.org/) - I learnt how to use Intl date formating from here.
 
 ## Author
 
-- Website - [Add your name here](https://www.your-site.com)
-- Frontend Mentor - [@yourusername](https://www.frontendmentor.io/profile/yourusername)
-- Twitter - [@yourusername](https://www.twitter.com/yourusername)
-
-**Note: Delete this note and add/remove/edit lines above based on what links you'd like to share.**
-
-## Acknowledgments
-
-This is where you can give a hat tip to anyone who helped you out on this project. Perhaps you worked in a team or got some inspiration from someone else's solution. This is the perfect place to give them some credit.
-
-**Note: Delete this note and edit this section's content as necessary. If you completed this challenge by yourself, feel free to delete this section entirely.**
+- Website - [Simeon Elebesunu](https://simeonelebesunu.vercel.app/)
+- Frontend Mentor - [@Dev-simeon-tech](https://www.frontendmentor.io/profile/Dev-simeon-tech)
+- Twitter - [@ose_simeon](https://x.com/ose_simeon)
