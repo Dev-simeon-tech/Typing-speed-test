@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTypingTimer } from "../hooks/useTypingTimer";
 import { useTypingSpeedContext } from "../hooks/useTypingSpeedContext";
 import useDuration from "../hooks/useDuration";
@@ -13,6 +13,7 @@ import { calculateWPM } from "../utils/calculateWpm";
 import { formatTime } from "../utils/formatTime";
 import { getTimerColorScheme } from "../utils/getTimerColorScheme";
 import { getModeValue } from "../utils/getModeValue";
+import type { WpmSample } from "../context/typingSpeed";
 
 const ModeArray: ModeType[] = [
   "timed (120s)",
@@ -42,13 +43,19 @@ const StatsAndSettingsBar = ({
     mode,
     setEnded,
     isPaused,
+    setChartData,
   } = useTypingSpeedContext();
   const { duration } = useDuration();
+  const [wpmTimeline, setWpmTimeline] = useState<WpmSample[]>([]);
 
-  const { time, start, reset, pause } = useTypingTimer({
+  const { time, start, reset, pause, isRunning } = useTypingTimer({
     mode: mode === "passage" ? "passage" : "timed",
     duration,
   });
+  const elapsedTime = mode === "passage" ? time : duration - time;
+  const liveWpm = calculateWPM(totalKeystrokes, elapsedTime);
+  const liveAccuracy = calculateAccuracy(totalKeystrokes, errorKeystrokes);
+  const correctChars = totalKeystrokes - errorKeystrokes;
 
   // handles timer changes to state
   useEffect(() => {
@@ -74,9 +81,37 @@ const StatsAndSettingsBar = ({
     };
   }, [started, time, setEnded, mode, setTotalTime]);
 
-  const elapsedTime = mode === "passage" ? time : duration - time;
-  const liveWpm = calculateWPM(totalKeystrokes, elapsedTime);
-  const liveAccuracy = calculateAccuracy(totalKeystrokes, errorKeystrokes);
+  //Handles live WPM and Accuracy calculation
+  const elapsedRef = useRef(elapsedTime);
+  const correctRef = useRef(correctChars);
+
+  useEffect(() => {
+    elapsedRef.current = elapsedTime;
+    correctRef.current = correctChars;
+  }, [elapsedTime, correctChars]);
+
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const interval = setInterval(() => {
+      const t = elapsedRef.current;
+      if (t < 1) return;
+
+      setWpmTimeline((prev) => [
+        ...prev,
+        {
+          time: t,
+          wpm: calculateWPM(correctRef.current, t),
+        },
+      ]);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isRunning]);
+
+  useEffect(() => {
+    return () => setChartData(wpmTimeline);
+  }, [setChartData, wpmTimeline]);
 
   return (
     <div className='flex flex-col lg:flex-wrap lg:justify-between lg:flex-row pb-4 gap-4 border-b border-neutral-700 '>

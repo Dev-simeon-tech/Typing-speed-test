@@ -48,6 +48,12 @@
   .animate-blink {
     animation: blink 1s step-start infinite;
   }
+  .animate-ripple-2 {
+    animation: 1s linear 2s ripple infinite;
+  }
+  .animate-ripple-1 {
+    animation: 1s linear ripple infinite;
+  }
 
   .text-preset-1 {
     font-family: var(--font-sora-bold);
@@ -148,6 +154,17 @@
   }
   25%,
   75% {
+    opacity: 0;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.5);
     opacity: 0;
   }
 }
