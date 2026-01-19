@@ -20,17 +20,18 @@ This is a solution to the [Typing Speed Test challenge on Frontend Mentor](https
 ### The challenge
 
 Users should be able to:
--Start a test by clicking the start button or by clicking the passage and typing
--Select a difficulty level (Easy, Medium, Hard) for passages of varying complexity
--Switch between mode: Timed (120s),Timed (60s),Timed (30s),Timed (15s) and Passage mode
--Restart at any time to get a new random passage from the selected difficulty
--See real-time WPM, accuracy, and time stats while typing
--See visual feedback showing correct characters (green), errors (red/underlined), and cursor position
--Correct mistakes with backspace (original errors still count against accuracy)
--View results showing WPM, accuracy, and characters (correct/incorrect) after completing a test
--See a "Baseline Established!" message on their first test, setting their personal best
--See a "High Score Smashed!" celebration with confetti when beating their personal best
--Have their personal best persist across sessions via localStorage
+
+- Start a test by clicking the start button or by clicking the passage and typing
+- Select a difficulty level (Easy, Medium, Hard) for passages of varying complexity
+- Switch between mode: Timed (120s),Timed (60s),Timed (30s),Timed (15s) and Passage mode
+- Restart at any time to get a new random passage from the selected difficulty
+- See real-time WPM, accuracy, and time stats while typing
+- See visual feedback showing correct characters (green), errors (red/underlined), and cursor position
+- Correct mistakes with backspace (original errors still count against accuracy)
+- View results showing WPM, accuracy, and characters (correct/incorrect) after completing a test
+- See a "Baseline Established!" message on their first test, setting their personal best
+- See a "High Score Smashed!" celebration with confetti when beating their personal best
+- Have their personal best persist across sessions via localStorage
 
 - View the optimal layout for the interface depending on their device's screen size
 - See hover and focus states for all interactive elements on the page
