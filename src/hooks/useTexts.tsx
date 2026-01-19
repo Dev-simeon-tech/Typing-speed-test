@@ -10,7 +10,7 @@ const useTexts = () => {
 
   useEffect(() => {
     const fetchTexts = async () => {
-      const response = await fetch("../../data.json");
+      const response = await fetch("/data.json");
       const data = await response.json();
       setTexts(data);
     };
