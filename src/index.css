@@ -49,10 +49,12 @@
     animation: blink 1s step-start infinite;
   }
   .animate-ripple-2 {
-    animation: 1s linear 2s ripple infinite;
+    animation: 1s linear ripple infinite;
+    animation-delay: 0.5s;
   }
   .animate-ripple-1 {
     animation: 1s linear ripple infinite;
+    animation-delay: 0s;
   }
 
   .text-preset-1 {
@@ -161,7 +163,7 @@
 @keyframes ripple {
   0% {
     transform: scale(1);
-    opacity: 0.6;
+    opacity: 1;
   }
   100% {
     transform: scale(1.5);

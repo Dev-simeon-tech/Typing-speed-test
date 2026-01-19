@@ -53,7 +53,7 @@ const TypingSpeedResults = () => {
       <div className='mt-8 pb-15 pt-10  md:mt-20 lg:mt-16 w-full overflow-x-hidden'>
         {isBaseline && (
           <div className='flex items-center text-center gap-2.5 flex-col'>
-            <CompletedIcon className='pb-1.5' />
+            <CheckmarkIcon />
             <h2 className='text-preset-1'>Baseline Established!</h2>
             <p className='text-preset-5 md:text-[1.24rem] text-neutral-400'>
               You’ve set the bar. Now the real challenge begins—time to beat it.
