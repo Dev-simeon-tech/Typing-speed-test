@@ -133,7 +133,12 @@ const TypingSpeedResults = () => {
               }}
               fontSize={12}
             />
-            <Tooltip />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "hsl(0, 0%, 7%)",
+                borderRadius: "6px",
+              }}
+            />
             <Line
               type='monotone'
               dataKey='wpm'
